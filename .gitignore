@@ -1,8 +1,7 @@
-./config/keys.js
-./keys.json
 node_modules
 bin
 obj
 scheduler.njsproj.user
 scheduler.sln
 scheduler.njsproj
+.env

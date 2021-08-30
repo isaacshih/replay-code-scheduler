@@ -25,16 +25,16 @@ app.set('view engine', 'handlebars')
 const { google } = require('googleapis')
 const passport = require('passport')
 const passportConfig = require('./config/passport-config')
-const keys = require('./config/keys')
 const cookieSession = require('cookie-session')
 const methodOverride = require('method-override')
 const { v4: uuidv4 } = require('uuid')
+require('dotenv').config()
 
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [keys.session.cookieKey]
+    keys: [process.env.COOKIE_KEY]
 }))
 
 app.use(passport.initialize())
@@ -133,7 +133,7 @@ app.get('/', async function (req, res) {
     context.submissionList = submissionList
     context.scheduleList = scheduleList
     context.user = req.user
-    context.admin = req.user === keys.admin.id
+    context.admin = req.user === process.env.ADMIN_ID
     res.render('home', context)
 })
 
@@ -145,7 +145,7 @@ app.get('/logout', function (req, res) {
 app.get('/submit', authenticateUser, function (req, res) {
     var context = {}
     context.user = req.user
-    context.admin = req.user === keys.admin.id
+    context.admin = req.user === process.env.ADMIN_ID
     res.render('submit', context)
 })
 
@@ -258,7 +258,7 @@ app.get('/approve', authenticateAdmin, async function (req, res) {
     var context = {}
     context.submissionList = unapproved
     context.user = req.user
-    context.admin = req.user === keys.admin.id
+    context.admin = req.user === process.env.ADMIN_ID
     res.render('approve', context)
 })
 
@@ -413,20 +413,20 @@ app.post('/', authenticateAdmin, async function (req, res) {
     const getRows = await googleSheets.spreadsheets.values.get({
         auth,
         spreadsheetId,
-        range: 'Sheet1!A2:G'
+        range: 'Sheet1!A2:J'
     })
 
     let dataArray = getRows.data.values
 
     let updates = []
     for (let i = 0; i < dataArray.length; i++) {
-        updates.push(['','','','Cannot be scheduled: Code outdated. Update code to allow submission to be .',''])
+        updates.push(['','','','Cannot be scheduled: Code outdated. Update code to allow submission to be scheduled.',dataArray[i][7],''])
     }
 
     await googleSheets.spreadsheets.values.update({
         auth,
         spreadsheetId,
-        range: 'Sheet1!C2:J',
+        range: 'Sheet1!D2:J',
         valueInputOption: 'USER_ENTERED',
         resource: {
             values: updates
@@ -611,7 +611,7 @@ function authenticateUser(req, res, next) {
 }
 
 function authenticateAdmin(req, res, next) {
-    if (req.user === keys.admin.id) {
+    if (req.user === process.env.ADMIN_ID) {
         return next()
     } else {
         res.redirect('/')
