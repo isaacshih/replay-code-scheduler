@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Scheduler</a>
+        <div class="nav navbar-nav navbar-right">
+            {{#if user}}
+            {{#if admin}}
+            <a class="nav-item nav-link" href="/approve">Approve</a>
+            {{/if}}
+            <a class="nav-item nav-link" href="/submit">Submit</a>
+            <a class="nav-item nav-link" href="/logout">Logout</a>
+            {{else}}
+            <a class="nav-item nav-link" href="/auth/google">Login</a>
+            {{/if}}
+        </div>
+    </div>
+</nav>
+
+<div id="submit" class="container">
+    <br />
+    <br />
+    <h1 class="text-center">Add Submission</h1>
+    <div class="d-flex justify-content-center"><small class="text-muted">Submission will be listed after admin approval</small></div>
+    <br />
+    <br />
+    <form method="POST" action="/submit">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input id="name" required type="text" pattern="[A-Za-z0-9_]{4,25}" minlength="4" maxlength="25" name="name" placeholder="Enter Twitch Name" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="code">Code:</label>
+            <input id="code" required type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" placeholder="Enter Replay Code" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="sr">SR:</label>
+            <input id="sr" required type="text" pattern="[0-9]{3,4}" minlength="3" maxlength="4" name="sr" placeholder="Enter SR" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="role">Role:</label>
+            <select id="role" required type="text" name="role" placeholder="info" class="form-control">
+                <option value="" disabled selected class="text-muted">Select Role</option>
+                <option value="DPS">DPS</option>
+                <option value="Tank">Tank</option>
+                <option value="Support">Support</option>
+            </select>
+        </div>
+        <br />
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </form>
+    <br />
+</div>

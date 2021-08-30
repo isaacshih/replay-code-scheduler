@@ -1,0 +1,450 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Scheduler</a>
+        <div class="nav navbar-nav navbar-right">
+            {{#if user}}
+            {{#if admin}}
+            <a class="nav-item nav-link" href="/approve">Approve</a>
+            {{/if}}
+            <a class="nav-item nav-link" href="/submit">Submit</a>
+            <a class="nav-item nav-link" href="/logout">Logout</a>
+            {{else}}
+            <a class="nav-item nav-link" href="/auth/google">Login</a>
+            {{/if}}
+        </div>
+    </div>
+</nav>
+
+<div id="schedule" class="container">
+    <br />
+    <br />
+    <h1 class="text-center">Schedule</h1>
+    <br />
+    <div class="row">
+        {{#if admin}}
+        <form action="/schedule" method="POST">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-dark" type="submit">Generate</button>
+            </div>
+        </form>
+        {{/if}}
+    </div>
+    <br />
+
+    {{#if admin}}
+    <div id="schedule-table" class="container">
+        {{#each scheduleList}}
+        <br />
+        <div class="row">
+            <div class="col-2">
+                <p id="{{this.id}}" class="date">Date</p>
+            </div>
+            <div class="col-8">
+                <hr />
+            </div>
+            <div class="d-flex justify-content-center col-1">
+                <p>Complete</p>
+            </div>
+            <div class="d-flex justify-content-center col-1">
+                <form action="/schedule/complete" method="POST">
+                    {{#each this.submissions}}
+                    <input type="hidden" name="schedule_items" value="{{this.id}}" />
+                    {{/each}}
+                    <button class="btn btn-dark" type="submit">&#10003;</button>
+                </form>
+            </div>
+        </div>
+        <br />
+        <div id="schedule-table-header" class="row">
+            <div class="col-4"><p>Name</p></div>
+            <div class="col-1"><p>Code</p></div>
+            <div class="col-1"><p>SR</p></div>
+            <div class="col-4"><p>Role</p></div>
+            <div class="col-1"><p class="text-center">Update</p></div>
+            <div class="col-1"><p class="text-center">Info</p></div>
+        </div>
+        {{#each this.submissions}}
+        <div class="row">
+            <div class="col-4">{{this.name}}</div>
+            <div class="col-1">{{this.code}}</div>
+            <div class="col-1">{{this.sr}}</div>
+            <div class="col-4">{{this.role}}</div>
+            <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleUpdateFormSchedule(`{{ this.id }}`)" class="btn btn-primary">&#8635;</button></div></div>
+            {{#if this.info}}
+            <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleInfoPanel(`{{ this.id }}`)" class="btn btn-warning">?</button></div></div>
+            {{else}}
+            <div class="col-1"><div class="d-flex justify-content-center"><button class="btn btn-secondary">?</button></div></div>
+            {{/if}}
+        </div>
+        <div class="update-form display-none" id="schedule-update-form-{{this.id}}">
+            <form method="post" action="/update/{{this.id}}">
+                <div class="form-group">
+                    <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" value="{{this.code}}" placeholder="Code" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="text" pattern="[0-9]{3,4}" minlength="3" maxlength="4" name="sr" value="{{this.sr}}" placeholder="SR" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <select type="text" name="role" placeholder="info" class="form-control">
+                        <option value="{{this.role}}" class="text-muted">{{this.role}}</option>
+                        <option value="DPS">DPS</option>
+                        <option value="Tank">Tank</option>
+                        <option value="Support">Support</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </div>
+            </form>
+            <br />
+        </div>
+        {{/each}}
+        <br />
+        {{/each}}
+    </div>
+    {{else}}
+    <div id="schedule-table" class="container">
+        {{#each scheduleList}}
+        <br />
+        <div class="row">
+            <div class="col-2">
+                <p id="{{this.id}}" class="date">Date</p>
+            </div>
+            <div class="col-8">
+                <hr />
+            </div>
+        </div>
+        <br />
+        <div id="schedule-table-header" class="row">
+            <div class="col-4"><p>Name</p></div>
+            <div class="col-1"><p>Code</p></div>
+            <div class="col-1"><p>SR</p></div>
+            <div class="col-4"><p>Role</p></div>
+            <div class="col-1"><p class="text-center">Update</p></div>
+            <div class="col-1"><p class="text-center">Info</p></div>
+        </div>
+        {{#each this.submissions}}
+        <div class="row">
+            <div class="col-4">{{this.name}}</div>
+            <div class="col-1">{{this.code}}</div>
+            <div class="col-1">{{this.sr}}</div>
+            <div class="col-5">{{this.role}}</div>
+            {{#if_eq ../user this.user_id}}
+            <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleUpdateFormSchedule(`{{ this.id }}`)" class="btn btn-primary">&#8635;</button></div></div>
+            {{else}}
+            <div class="col-1"><div class="d-flex justify-content-center"><button class="btn btn-secondary">&#8635;</button></div></div>
+            {{/if_eq}}
+            {{#if this.info}}
+            <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleInfoPanel(`{{ this.id }}`)" class="btn btn-warning">?</button></div></div>
+            {{else}}
+            <div class="col-1"><div class="d-flex justify-content-center"><button class="btn btn-secondary">?</button></div></div>
+            {{/if}}
+        </div>
+        <div class="update-form display-none" id="schedule-update-form-{{this.id}}">
+            <form method="post" action="/update/{{this.id}}">
+                <div class="form-group">
+                    <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" value="{{this.code}}" placeholder="Code" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="text" pattern="[0-9]{3,4}" minlength="3" maxlength="4" name="sr" value="{{this.sr}}" placeholder="SR" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <select type="text" name="role" placeholder="info" class="form-control">
+                        <option value="{{this.role}}" class="text-muted">{{this.role}}</option>
+                        <option value="DPS">DPS</option>
+                        <option value="Tank">Tank</option>
+                        <option value="Support">Support</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </div>
+            </form>
+            <br />
+        </div>
+        {{/each}}
+        <br />
+        {{/each}}
+    </div>
+    {{/if}}
+</div>
+
+{{#if admin}}
+<div id="submissions" class="container">
+    <br />
+    <br />
+    <h1 class="text-center">Submissions</h1>
+    <br />
+    <br />
+    <div id="submissions-table-header" class="container">
+        <div class="row">
+            <div class="col-4"><p>Name</p></div>
+            <div class="col-1"><p>Code</p></div>
+            <div class="col-1"><p>SR</p></div>
+            <div class="col-4"><p>Role</p></div>
+            <div class="col-1"><p class="text-center">Update</p></div>
+            <div class="col-1"><p class="text-center">Info</p></div>
+        </div>
+    </div>
+    <div id="submissions-table-body">
+        {{#each submissionList}}
+        <div class="container">
+            <div class="row">
+                <div class="col-4">{{this.name}}</div>
+                <div class="col-1">{{this.code}}</div>
+                <div class="col-1">{{this.sr}}</div>
+                <div class="col-4">{{this.role}}</div>
+                <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleUpdateFormSubmission(`{{ this.id }}`)" class="btn btn-primary">&#8635;</button></div></div>
+                {{#if this.info}}
+                <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleInfoPanel(`{{ this.id }}`)" class="btn btn-warning">?</button></div></div>
+                {{else}}
+                <div class="col-1"><div class="d-flex justify-content-center"><button class="btn btn-secondary">?</button></div></div>
+                {{/if}}
+            </div>
+            <div id="info-panel-{{this.id}}" class="info-panel display-none container">
+                <br />
+                <div class="row">
+                    <div class="col-8"><button class="hidden btn"></button></div>
+                    <div class="col-4 text-right">{{this.info}}</div>
+                </div>
+                <br />
+            </div>
+            <div class="update-form display-none" id="submission-update-form-{{this.id}}">
+                <form method="post" action="/update/{{this.id}}">
+                    <div class="form-group">
+                        <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" value="{{this.code}}" placeholder="Code" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" pattern="[0-9]{3,4}" minlength="3" maxlength="4" name="sr" value="{{this.sr}}" placeholder="SR" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <select type="text" name="role" placeholder="info" class="form-control">
+                            <option value="{{this.role}}" selected class="text-muted">{{this.role}}</option>
+                            <option value="DPS">DPS</option>
+                            <option value="Tank">Tank</option>
+                            <option value="Support">Support</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">Update</button>
+                    </div>
+                </form>
+                <br />
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+{{else}}
+<div id="submissions" class="container">
+    <br />
+    <br />
+    <h1 class="text-center">Submissions</h1>
+    <br />
+    <br />
+    <div id="submissions-table-header" class="container">
+        <div class="row">
+            <div class="col-4"><p>Name</p></div>
+            <div class="col-1"><p>Code</p></div>
+            <div class="col-1"><p>SR</p></div>
+            <div class="col-4"><p>Role</p></div>
+            <div class="col-1"><p class="text-center">Update</p></div>
+            <div class="col-1"><p class="text-center">Info</p></div>
+        </div>
+    </div>
+    <div id="submissions-table-body">
+        {{#each submissionList}}
+        <div class="container">
+            <div class="row">
+                <div class="col-4">{{this.name}}</div>
+                <div class="col-1">{{this.code}}</div>
+                <div class="col-1">{{this.sr}}</div>
+                <div class="col-4">{{this.role}}</div>
+                {{#if_eq ../user this.user_id}}
+                <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleUpdateFormSubmission(`{{ this.id }}`)" class="btn btn-primary">&#8635;</button></div></div>
+                {{else}}
+                <div class="col-1"><div class="d-flex justify-content-center"><button class="btn btn-secondary">&#8635;</button></div></div>
+                {{/if_eq}}
+                {{#if this.info}}
+                <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleInfoPanel(`{{ this.id }}`)" class="btn btn-warning">?</button></div></div>
+                {{else}}
+                <div class="col-1"><div class="d-flex justify-content-center"><button class="btn btn-secondary">?</button></div></div>
+                {{/if}}
+            </div>
+            <div id="info-panel-{{this.id}}" class="info-panel display-none container">
+                <br />
+                <div class="row">
+                    <div class="col-8"><button class="hidden btn"></button></div>
+                    <div class="col-4 text-right">{{this.info}}</div>
+                </div>
+                <br />
+            </div>
+            <div class="display-none" id="submission-update-form-{{this.id}}">
+                <form method="post" action="/update/{{this.id}}">
+                    <div class="form-group">
+                        <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" value="{{this.code}}" placeholder="Code" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" pattern="[0-9]{3,4}" minlength="3" maxlength="4" name="sr" value="{{this.sr}}" placeholder="SR" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <select type="text" name="role" placeholder="info" class="form-control">
+                            <option value="{{this.role}}" selected class="text-muted">{{this.role}}</option>
+                            <option value="DPS">DPS</option>
+                            <option value="Tank">Tank</option>
+                            <option value="Support">Support</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">Update</button>
+                    </div>
+                </form>
+                <br />
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+{{/if}}
+
+{{#if admin}}
+<div id="patch" class="container">
+    <br />
+    <br />
+    <h2 class="text-center">Patch Day</h2>
+    <br />
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <button onclick="toggleButton()" class="btn btn-dark">(click to reveal)</button>
+        </div>
+    </div>
+    <br />
+    <div id="patch-button" class="hidden row">
+        <form action="/" method="POST">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-danger" type="submit">Click to reset ALL codes!</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{/if}}
+
+<div id="page-extend">
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+</div>
+
+
+<script>
+    function getDate(dayCount) {
+        dayCount = parseInt(dayCount)
+
+        //                Sun    Mon   Tue   Wed   Thu   Fri   Sun
+        const schedule = [false, true, true, true, true, true, true]
+
+        var date = new Date()
+
+        for (let i = 0; i < dayCount; i++) {
+            date.setDate(date.getDate() + 1)
+            while (!schedule[date.getDay()]) {
+                date.setDate(date.getDate() + 1)
+            }
+        }
+
+        while (!schedule[date.getDay()]) {
+            date.setDate(date.getDate() + 1)
+        }
+
+        return date
+    }
+
+    function toggleInfoPanel(id) {
+        var form = document.getElementById('submission-update-form-' + id)
+        var panel = document.getElementById('info-panel-' + id)
+        var forms = document.getElementsByClassName('update-form')
+        var panels = document.getElementsByClassName('info-panel')
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none'
+        } else {
+            for (let i = 0; i < panels.length; i++) {
+                panels[i].style.display = 'none'
+            }
+            for (let i = 0; i < forms.length; i++) {
+                forms[i].style.display = 'none'
+            }
+            panel.style.display = 'block'
+            form.style.display = 'none'
+        }
+    }
+
+    function toggleUpdateFormSubmission(id) {
+        var form = document.getElementById('submission-update-form-' + id)
+        var panel = document.getElementById('info-panel-' + id)
+        var forms = document.getElementsByClassName('update-form')
+        var panels = document.getElementsByClassName('info-panel')
+        if (form.style.display === 'block') {
+            form.style.display = 'none'
+        } else {
+            for (let i = 0; i < panels.length; i++) {
+                panels[i].style.display = 'none'
+            }
+            for (let i = 0; i < forms.length; i++) {
+                forms[i].style.display = 'none'
+            }
+            form.style.display = 'block'
+            panel.style.display = 'none'
+        }
+    }
+
+    function toggleUpdateFormSchedule(id) {
+        var form = document.getElementById('schedule-update-form-' + id)
+        var forms = document.getElementsByClassName('update-form')
+        if (form.style.display === 'block') {
+            form.style.display = 'none'
+        } else {
+            for (let i = 0; i < forms.length; i++) {
+                forms[i].style.display = 'none'
+            }
+            form.style.display = 'block'
+        }
+    }
+
+    function toggleButton() {
+        var button = document.getElementById('patch-button')
+        if (button.style.visibility === "visible") {
+            button.style.visibility = "hidden"
+        } else {
+            button.style.visibility = "visible"
+        }
+    }
+
+    window.onload = function () {
+        const dates = document.getElementsByClassName('date')
+        for (let i = 0; i < dates.length; i++) {
+            dates[i].innerHTML = getDate(dates[i].id).toDateString().substring(0, 10)
+        }
+    }
+</script>
+
+<style>
+    p {
+        font-weight: bold
+    }
+
+    .display-none {
+        display: none
+    }
+
+    .hidden {
+        visibility: hidden
+    }
+</style>
