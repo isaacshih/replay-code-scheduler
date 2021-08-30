@@ -1,7 +1,8 @@
 node_modules
 bin
 obj
-scheduler.njsproj.user
-scheduler.sln
-scheduler.njsproj
+*.user
+*.sln
+*.njsproj
 .env
+*.suo

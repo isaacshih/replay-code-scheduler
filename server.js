@@ -76,16 +76,14 @@ app.get('/', async function (req, res) {
                     return console.log(err);
                 } else {
                     const dataArray = response.data.values
+
                     let submissionList = []
                     let scheduleList = []
 
                     if (dataArray) {
                         for (let i = 0; i < dataArray.length; i++) {
-                            if (!dataArray[i][7]) {
-                                continue
-                            }
 
-                            while (dataArray[i].length < 10) {
+                            while (dataArray[i].length < 9) {
                                 dataArray[i].push('')
                             }
 
@@ -98,31 +96,32 @@ app.get('/', async function (req, res) {
                                 'role': dataArray[i][5],
                                 'info': dataArray[i][6],
                                 'approved': dataArray[i][7],
-                                'scheduled': dataArray[i][8],
-                                'completed': dataArray[i][9]
+                                'completed': dataArray[i][8]
                             }
 
-                            if (!submissionItem.approved || (submissionItem.scheduled + submissionItem.completed)) {
-                                i = i
-                            } else {
+                            if (!submissionItem.approved) {
+                                continue
+                            }
+
+                            if (!submissionItem.completed) {
                                 submissionList.push(submissionItem)
-                            }
 
-                            if (submissionItem.scheduled) {
-                                if (scheduleList.length) {
-                                    if (scheduleList[scheduleList.length - 1].submissions.length < REVIEWS_PER_DAY) {
-                                        scheduleList[scheduleList.length - 1].submissions.push(submissionItem)
+                                if (!submissionItem.info) {
+                                    if (scheduleList.length) {
+                                        if (scheduleList[scheduleList.length - 1].submissions.length < REVIEWS_PER_DAY) {
+                                            scheduleList[scheduleList.length - 1].submissions.push(submissionItem)
+                                        } else {
+                                            scheduleList.push({
+                                                id: scheduleList.length,
+                                                submissions: [submissionItem]
+                                            })
+                                        }
                                     } else {
                                         scheduleList.push({
                                             id: scheduleList.length,
                                             submissions: [submissionItem]
                                         })
                                     }
-                                } else {
-                                    scheduleList.push({
-                                        id: scheduleList.length,
-                                        submissions: [submissionItem]
-                                    })
                                 }
                             }
                         }
@@ -172,15 +171,26 @@ app.post('/submit', authenticateUser, async function (req, res) {
                 const id = uuidv4()
                 var info = ''
                 if (dataArray) {
+                    const submissionItem = {
+                        'id': dataArray[i][0],
+                        'user_id': dataArray[i][1],
+                        'name': dataArray[i][2],
+                        'code': dataArray[i][3],
+                        'sr': dataArray[i][4],
+                        'role': dataArray[i][5],
+                        'info': dataArray[i][6],
+                        'approved': dataArray[i][7],
+                        'completed': dataArray[i][8]
+                    }
 
                     for (let i = 0; i < dataArray.length; i++) {
-                        if (dataArray[i][1] == req.user && dataArray[i][9]) {
-                            var d = new Date(dataArray[i][9])
+                        if (submissionItem.user_id == req.user && submissionItem.completed) {
+                            var d = new Date(submissionItem.completed)
                             d.setDate(d.getDate() + REVIEW_WAIT_TIME)
                             if (d > new Date()) {
                                 info = 'Cannot be scheduled: Wait restriction. Can be scheduled after ' + d.toDateString().substring(0, 10) + '.'
                             }
-                        } else if (dataArray[i][1] == req.user) {
+                        } else if (submissionItem.user_id == req.user) {
                             info = 'Cannot be scheduled: Multiple submissions. Can be scheduled after your higher priority submissons are completed.'
                         }
                     }
@@ -233,8 +243,7 @@ app.get('/approve', authenticateAdmin, async function (req, res) {
                         'role': dataArray[i][5],
                         'info': dataArray[i][6],
                         'approved': dataArray[i][7],
-                        'scheduled': dataArray[i][8],
-                        'completed': dataArray[i][9]
+                        'completed': dataArray[i][8]
                     }
                     if (!submissionItem.approved) {
                         unapproved.push(submissionItem)
@@ -409,7 +418,7 @@ app.post('/', authenticateAdmin, async function (req, res) {
             console.log('auth error', err);
         });
 })
-
+/*
 app.post('/schedule', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
@@ -434,8 +443,7 @@ app.post('/schedule', authenticateAdmin, async function (req, res) {
                         'role': dataArray[i][5],
                         'info': dataArray[i][6],
                         'approved': dataArray[i][7],
-                        'scheduled': dataArray[i][8],
-                        'completed': dataArray[i][9]
+                        'completed': dataArray[i][8]
                     }
 
                     if (!submissionItem.info && submissionItem.approved && !submissionItem.scheduled && !submissionItem.completed) {
@@ -465,7 +473,7 @@ app.post('/schedule', authenticateAdmin, async function (req, res) {
             console.log('auth error', err);
         });
 })
-
+*/
 app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
@@ -500,7 +508,7 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
                         range: ranges[i],
                         valueInputOption: 'USER_ENTERED',
                         resource: {
-                            values: [['', new Date().toDateString()]]
+                            values: [[new Date().toDateString()]]
                         }
                     })
                 }
@@ -516,20 +524,27 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
                 ids = []
 
                 for (let i = 0; i < dataArray.length; i++) {
-                    if (lastReview.get(dataArray[i][1])) {
-                        let d1 = lastReview.get(dataArray[i][1])
-                        if (dataArray[i][9]) {
-                            lastReview.set(dataArray[i][1], new Date(dataArray[i][9]))
-                        }
-                    } else if (dataArray[i][9]) {
-                        lastReview.set(dataArray[i][1], new Date(dataArray[i][9]))
+                    const submissionItem = {
+                        'id': dataArray[i][0],
+                        'user_id': dataArray[i][1],
+                        'name': dataArray[i][2],
+                        'code': dataArray[i][3],
+                        'sr': dataArray[i][4],
+                        'role': dataArray[i][5],
+                        'info': dataArray[i][6],
+                        'approved': dataArray[i][7],
+                        'completed': dataArray[i][8]
                     }
 
-                    if (lastReview.get(dataArray[i][1]) && !dataArray[i][9]) {
-                        let d1 = lastReview.get(dataArray[i][1])
+                    if (submissionItem.completed) {
+                        lastReview.set(submissionItem.user_id, new Date(submissionItem.completed))
+                    }
+
+                    if (lastReview.get(submissionItem.user_id) && !submissionItem.completed) {
+                        let d1 = lastReview.get(submissionItem.user_id)
                         d1.setDate(d1.getDate() + REVIEW_WAIT_TIME)
                         if (d1 > new Date()) {
-                            ids.push(dataArray[i][0])
+                            ids.push(submissionItem.id)
                         }
                     }
                 }

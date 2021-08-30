@@ -20,17 +20,7 @@
     <br />
     <h1 class="text-center">Schedule</h1>
     <br />
-    <div class="row">
-        {{#if admin}}
-        <form action="/schedule" method="POST">
-            <div class="d-flex justify-content-center">
-                <button class="btn btn-dark" type="submit">Generate</button>
-            </div>
-        </form>
-        {{/if}}
-    </div>
     <br />
-
     {{#if admin}}
     <div id="schedule-table" class="container">
         {{#each scheduleList}}
