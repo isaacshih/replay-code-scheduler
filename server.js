@@ -189,10 +189,10 @@ app.post('/submit', authenticateUser, async function (req, res) {
                             var d = new Date(submissionItem.completed)
                             d.setDate(d.getDate() + REVIEW_WAIT_TIME)
                             if (d > new Date()) {
-                                info = 'Cannot be scheduled: WAIT RESTRICTION until ' + d.toDateString().substring(0, 10) + '.'
+                                info = 'WAIT RESTRICTION until ' + d.toDateString().substring(0, 10) + '.'
                             }
                         } else if (submissionItem.user_id == req.user) {
-                            info = 'Cannot be scheduled: MULTIPLE SUBMISSIONS.'
+                            info = 'MULTIPLE SUBMISSIONS.'
                         }
                     }
                 }
@@ -476,7 +476,7 @@ app.post('/admin', authenticateAdmin, async function (req, res) {
                 const dataArray = response.data.values
                 let updates = []
                 for (let i = 0; i < dataArray.length; i++) {
-                    updates.push(['Code Outdated', '', '', 'Cannot be scheduled: CODE OUTDATED.', dataArray[i][7], ''])
+                    updates.push(['Code Outdated', '', '', 'CODE OUTDATED.', dataArray[i][7], ''])
                 }
 
                 await googleSheets.spreadsheets.values.update({
@@ -585,7 +585,7 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
                         range: ranges[i],
                         valueInputOption: 'USER_ENTERED',
                         resource: {
-                            values: [['Cannot be scheduled: WAIT RESTRICTION until ' + lastReview.get(dataArray[i][1]).toDateString().substring(0, 10) + '.']]
+                            values: [['WAIT RESTRICTION until ' + lastReview.get(dataArray[i][1]).toDateString().substring(0, 10) + '.']]
                         }
                     })
                 }
