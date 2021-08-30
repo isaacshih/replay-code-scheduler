@@ -291,7 +291,7 @@ app.post('/admin/:id', authenticateAdmin, async function (req, res) {
                     }
                 })
 
-                res.redirect('/approve')
+                res.redirect('/admin')
             });
         })
         .catch((err) => {
@@ -333,7 +333,7 @@ app.delete('/admin/:id', authenticateAdmin, async function (req, res) {
                     }
                 })
 
-                res.redirect('/approve')
+                res.redirect('/admin')
             });
         })
         .catch((err) => {
@@ -412,69 +412,14 @@ app.post('/admin', authenticateAdmin, async function (req, res) {
                     }
                 })
 
-                res.redirect('/')
+                res.redirect('/admin')
             });
         })
         .catch((err) => {
             console.log('auth error', err);
         });
 })
-/*
-app.post('/schedule', authenticateAdmin, async function (req, res) {
-    googleAuth.authorize()
-        .then((auth) => {
-            googleSheets.spreadsheets.values.get({
-                auth: auth,
-                spreadsheetId: SPREADSHEET_ID,
-                range: "'Sheet1'!A2:J",
-            }, async function (err, response) {
-                if (err) {
-                    console.log('The API returned an error: ' + err);
-                    return console.log(err);
-                }
-                const dataArray = response.data.values
-                let scheduleCount = 0
-                for (let i = 0; i < dataArray.length; i++) {
-                    const submissionItem = {
-                        'id': dataArray[i][0],
-                        'user_id': dataArray[i][1],
-                        'name': dataArray[i][2],
-                        'code': dataArray[i][3],
-                        'sr': dataArray[i][4],
-                        'role': dataArray[i][5],
-                        'info': dataArray[i][6],
-                        'approved': dataArray[i][7],
-                        'completed': dataArray[i][8]
-                    }
 
-                    if (!submissionItem.info && submissionItem.approved && !submissionItem.scheduled && !submissionItem.completed) {
-                        scheduleCount++
-
-                        const updateRange = 'Sheet1!I' + (i + 2)
-
-                        await googleSheets.spreadsheets.values.update({
-                            auth: auth,
-                            spreadsheetId: SPREADSHEET_ID,
-                            range: updateRange,
-                            valueInputOption: 'USER_ENTERED',
-                            resource: {
-                                values: [['scheduled']]
-                            }
-                        })
-                    }
-                    if (scheduleCount === REVIEWS_PER_DAY) {
-                        break
-                    }
-                }
-
-                res.redirect('/')
-            });
-        })
-        .catch((err) => {
-            console.log('auth error', err);
-        });
-})
-*/
 app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
