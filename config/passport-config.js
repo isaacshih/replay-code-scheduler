@@ -14,7 +14,7 @@ passport.use(
     new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "/auth/google/callback"
+        callbackURL: "https://afternoon-scrubland-27043.herokuapp.com/auth/google/callback"
     },
     function (accessToken, refreshToken, profile, done) {
         return done(null, profile.id)
