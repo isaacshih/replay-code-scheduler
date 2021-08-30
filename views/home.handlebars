@@ -68,7 +68,7 @@
             {{/if}}
         </div>
         <div class="update-form display-none" id="schedule-update-form-{{this.id}}">
-            <form method="post" action="/update/{{this.id}}">
+            <form method="post" action="/update/{{this.id}}/{{this.user_id}}">
                 <div class="form-group">
                     {{#if_eq this.code "Code Outdated"}}
                     <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" placeholder="Code" class="form-control" />
@@ -140,7 +140,7 @@
             {{/if}}
         </div>
         <div class="update-form display-none" id="schedule-update-form-{{this.id}}">
-            <form method="post" action="/update/{{this.id}}">
+            <form method="post" action="/update/{{this.id}}/{{this.user_id}}">
                 <div class="form-group">
                     {{#if_eq this.code "Code Outdated"}}
                     <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" placeholder="Code" class="form-control" />
@@ -217,7 +217,7 @@
                 <br />
             </div>
             <div class="update-form display-none" id="submission-update-form-{{this.id}}">
-                <form method="post" action="/update/{{this.id}}">
+                <form method="post" action="/update/{{this.id}}/{{this.user_id}}">
                     <div class="form-group">
                         {{#if_eq this.code "Code Outdated"}}
                         <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" placeholder="Code" class="form-control" />
@@ -295,7 +295,7 @@
                 <br />
             </div>
             <div class="display-none" id="submission-update-form-{{this.id}}">
-                <form method="post" action="/update/{{this.id}}">
+                <form method="post" action="/update/{{this.id}}/{{this.user_id}}">
                     <div class="form-group">
                         {{#if_eq this.code "Code Outdated"}}
                         <input type="text" pattern="[A-Z0-9]{6}" minlength="6" maxlength="6" name="code" placeholder="Code" class="form-control" />

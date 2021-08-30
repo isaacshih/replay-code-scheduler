@@ -231,6 +231,7 @@ app.get('/admin', authenticateAdmin, async function (req, res) {
                 const dataArray = response.data.values
 
                 var unapproved = []
+                var fullList = []
                 for (let i = 0; i < dataArray.length; i++) {
                     while (dataArray[i].length < 10) {
                         dataArray[i].push('')
@@ -249,10 +250,13 @@ app.get('/admin', authenticateAdmin, async function (req, res) {
                     if (!submissionItem.approved) {
                         unapproved.push(submissionItem)
                     }
+                    fullList.push(submissionItem)
+
                 }
 
                 var context = {}
                 context.submissionList = unapproved
+                context.fullList = fullList
                 context.user = req.user
                 context.admin = req.user === process.env.ADMIN_ID
                 res.render('admin', context)
@@ -347,7 +351,8 @@ app.delete('/admin/:id', authenticateAdmin, async function (req, res) {
     
 })
 
-app.post('/update/:id', authenticateAdmin, async function (req, res) {
+app.post('/update/:id/:user_id', authenticateAuthorizedUser, async function (req, res) {
+    console.log('poop')
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -542,6 +547,14 @@ function authenticateUser(req, res, next) {
         return next()
     } else {
         res.redirect('/auth/google')
+    }
+}
+
+function authenticateAuthorizedUser(req, res, next) {
+    if (req.user === req.params.user_id || req.user === process.env.ADMIN_ID) {
+        return next()
+    } else {
+        res.redirect('/')
     }
 }
 
