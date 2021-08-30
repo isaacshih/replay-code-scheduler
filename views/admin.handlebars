@@ -4,7 +4,7 @@
         <div class="nav navbar-nav navbar-right">
             {{#if user}}
             {{#if admin}}
-            <a class="nav-item nav-link" href="/approve">Approve</a>
+            <a class="nav-item nav-link" href="/admin">Admin</a>
             {{/if}}
             <a class="nav-item nav-link" href="/submit">Submit</a>
             <a class="nav-item nav-link" href="/logout">Logout</a>
@@ -18,7 +18,7 @@
 <div id="submissions" class="container">
     <br />
     <br />
-    <h1 class="text-center">Unapproved Submissions</h1>
+    <h1 class="text-center">Approve Submissions</h1>
     <br />
     <br />
     <div id="submissions-table-header" class="container">
@@ -59,8 +59,44 @@
     </div>
 </div>
 
+<div id="patch" class="container">
+    <br />
+    <br />
+    <h1 class="text-center">Reset Codes</h1>
+    <br />
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <button onclick="toggleButton()" class="btn btn-dark">(click to reveal)</button>
+        </div>
+    </div>
+    <br />
+    <div id="patch-button" class="hidden row">
+        <form action="/admin" method="POST">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-danger" type="submit">Reset ALL codes!</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+    function toggleButton() {
+        var button = document.getElementById('patch-button')
+        if (button.style.visibility === "visible") {
+            button.style.visibility = "hidden"
+        } else {
+            button.style.visibility = "visible"
+        }
+    }
+</script>
+
 <style>
     p {
         font-weight: bold
+    }
+
+    .hidden {
+        visibility: hidden
     }
 </style>

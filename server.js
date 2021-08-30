@@ -216,7 +216,7 @@ app.post('/submit', authenticateUser, async function (req, res) {
         });
 })
 
-app.get('/approve', authenticateAdmin, async function (req, res) {
+app.get('/admin', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -255,7 +255,7 @@ app.get('/approve', authenticateAdmin, async function (req, res) {
                 context.submissionList = unapproved
                 context.user = req.user
                 context.admin = req.user === process.env.ADMIN_ID
-                res.render('approve', context)
+                res.render('admin', context)
             });
         })
         .catch((err) => {
@@ -263,7 +263,7 @@ app.get('/approve', authenticateAdmin, async function (req, res) {
         });
 })
 
-app.post('/approve/:id', authenticateAdmin, async function (req, res) {
+app.post('/admin/:id', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -299,7 +299,7 @@ app.post('/approve/:id', authenticateAdmin, async function (req, res) {
         });
 })
 
-app.delete('/approve/:id', authenticateAdmin, async function (req, res) {
+app.delete('/admin/:id', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -384,7 +384,7 @@ app.post('/update/:id', authenticateAdmin, async function (req, res) {
         });
 })
 
-app.post('/', authenticateAdmin, async function (req, res) {
+app.post('/admin', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
