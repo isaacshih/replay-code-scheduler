@@ -171,19 +171,20 @@ app.post('/submit', authenticateUser, async function (req, res) {
                 const id = uuidv4()
                 var info = ''
                 if (dataArray) {
-                    const submissionItem = {
-                        'id': dataArray[i][0],
-                        'user_id': dataArray[i][1],
-                        'name': dataArray[i][2],
-                        'code': dataArray[i][3],
-                        'sr': dataArray[i][4],
-                        'role': dataArray[i][5],
-                        'info': dataArray[i][6],
-                        'approved': dataArray[i][7],
-                        'completed': dataArray[i][8]
-                    }
+                
 
                     for (let i = 0; i < dataArray.length; i++) {
+                        const submissionItem = {
+                            'id': dataArray[i][0],
+                            'user_id': dataArray[i][1],
+                            'name': dataArray[i][2],
+                            'code': dataArray[i][3],
+                            'sr': dataArray[i][4],
+                            'role': dataArray[i][5],
+                            'info': dataArray[i][6],
+                            'approved': dataArray[i][7],
+                            'completed': dataArray[i][8]
+                        }
                         if (submissionItem.user_id == req.user && submissionItem.completed) {
                             var d = new Date(submissionItem.completed)
                             d.setDate(d.getDate() + REVIEW_WAIT_TIME)
