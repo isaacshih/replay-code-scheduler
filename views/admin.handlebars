@@ -42,14 +42,14 @@
                 <div class="col-3">{{this.role}}</div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
-                        <form action="/approve/{{this.id}}" method="POST">
+                        <form action="/admin/{{this.id}}" method="POST">
                             <button class="btn btn-success">&#10003;</button>
                         </form>
                     </div>
                 </div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
-                        <form action="/approve/{{this.id}}?_method=DELETE" method="POST">
+                        <form action="/admin/{{this.id}}?_method=DELETE" method="POST">
                             <button class="btn btn-danger">&#10005;</button>
                         </form>
                     </div>
