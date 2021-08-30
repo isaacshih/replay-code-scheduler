@@ -47,18 +47,18 @@
         <br />
         <div id="schedule-table-header" class="row">
             <div class="col-4"><p>Name</p></div>
-            <div class="col-1"><p>Code</p></div>
+            <div class="col-2"><p>Code</p></div>
             <div class="col-1"><p>SR</p></div>
-            <div class="col-4"><p>Role</p></div>
+            <div class="col-3"><p>Role</p></div>
             <div class="col-1"><p class="text-center">Update</p></div>
             <div class="col-1"><p class="text-center">Info</p></div>
         </div>
         {{#each this.submissions}}
         <div class="row">
             <div class="col-4">{{this.name}}</div>
-            <div class="col-1">{{this.code}}</div>
+            <div class="col-2">{{this.code}}</div>
             <div class="col-1">{{this.sr}}</div>
-            <div class="col-4">{{this.role}}</div>
+            <div class="col-3">{{this.role}}</div>
             <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleUpdateFormSchedule(`{{ this.id }}`)" class="btn btn-primary">&#8635;</button></div></div>
             {{#if this.info}}
             <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleInfoPanel(`{{ this.id }}`)" class="btn btn-warning">?</button></div></div>
@@ -107,18 +107,18 @@
         <br />
         <div id="schedule-table-header" class="row">
             <div class="col-4"><p>Name</p></div>
-            <div class="col-1"><p>Code</p></div>
+            <div class="col-2"><p>Code</p></div>
             <div class="col-1"><p>SR</p></div>
-            <div class="col-4"><p>Role</p></div>
+            <div class="col-3"><p>Role</p></div>
             <div class="col-1"><p class="text-center">Update</p></div>
             <div class="col-1"><p class="text-center">Info</p></div>
         </div>
         {{#each this.submissions}}
         <div class="row">
             <div class="col-4">{{this.name}}</div>
-            <div class="col-1">{{this.code}}</div>
+            <div class="col-2">{{this.code}}</div>
             <div class="col-1">{{this.sr}}</div>
-            <div class="col-5">{{this.role}}</div>
+            <div class="col-3">{{this.role}}</div>
             {{#if_eq ../user this.user_id}}
             <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleUpdateFormSchedule(`{{ this.id }}`)" class="btn btn-primary">&#8635;</button></div></div>
             {{else}}
@@ -169,9 +169,9 @@
     <div id="submissions-table-header" class="container">
         <div class="row">
             <div class="col-4"><p>Name</p></div>
-            <div class="col-1"><p>Code</p></div>
+            <div class="col-2"><p>Code</p></div>
             <div class="col-1"><p>SR</p></div>
-            <div class="col-4"><p>Role</p></div>
+            <div class="col-3"><p>Role</p></div>
             <div class="col-1"><p class="text-center">Update</p></div>
             <div class="col-1"><p class="text-center">Info</p></div>
         </div>
@@ -181,9 +181,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-4">{{this.name}}</div>
-                <div class="col-1">{{this.code}}</div>
+                <div class="col-2">{{this.code}}</div>
                 <div class="col-1">{{this.sr}}</div>
-                <div class="col-4">{{this.role}}</div>
+                <div class="col-3">{{this.role}}</div>
                 <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleUpdateFormSubmission(`{{ this.id }}`)" class="btn btn-primary">&#8635;</button></div></div>
                 {{#if this.info}}
                 <div class="col-1"><div class="d-flex justify-content-center"><button onclick="toggleInfoPanel(`{{ this.id }}`)" class="btn btn-warning">?</button></div></div>
