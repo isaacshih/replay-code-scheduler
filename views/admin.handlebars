@@ -84,14 +84,14 @@
         {{#each fullList}}
         <div class="container">
             <div class="row">
-                <div class="col-2"><p>{{this.user_id}}</p></div>
-                <div class="col-1"><p>{{this.name}}</p></div>
-                <div class="col-1"><p>{{this.code}}</p></div>
-                <div class="col-1"><p>{{this.sr}}</p></div>
-                <div class="col-1"><p>{{this.role}}</p></div>
-                <div class="col-2"><p>{{this.info}}</p></div>
-                <div class="col-1"><p>{{this.approved}}</p></div>
-                <div class="col-1"><p>{{this.completed}}</p></div>
+                <div class="col-2">{{this.user_id}}</div>
+                <div class="col-1">{{this.name}}</div>
+                <div class="col-1">{{this.code}}</div>
+                <div class="col-1">{{this.sr}}</div>
+                <div class="col-1">{{this.role}}</div>
+                <div class="col-2">{{this.info}}</div>
+                <div class="col-1">{{this.approved}}</div>
+                <div class="col-1">{{this.completed}}</div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
                         <form action="/admin/complete/{{this.id}}" method="POST">

@@ -189,10 +189,10 @@ app.post('/submit', authenticateUser, async function (req, res) {
                             var d = new Date(submissionItem.completed)
                             d.setDate(d.getDate() + REVIEW_WAIT_TIME)
                             if (d > new Date()) {
-                                info = 'Cannot be scheduled: WAIT RESTRICTION. Can be scheduled after ' + d.toDateString().substring(0, 10) + '.'
+                                info = 'Cannot be scheduled: WAIT RESTRICTION until ' + d.toDateString().substring(0, 10) + '.'
                             }
                         } else if (submissionItem.user_id == req.user) {
-                            info = 'Cannot be scheduled: MULTIPLE SUBMISSIONS. Can be scheduled after your higher priority submissons are completed.'
+                            info = 'Cannot be scheduled: MULTIPLE SUBMISSIONS.'
                         }
                     }
                 }
@@ -343,12 +343,84 @@ app.delete('/admin/:id', authenticateAdmin, async function (req, res) {
         .catch((err) => {
             console.log('auth error', err);
         });
+})
 
-    
+app.post('/admin/complete/:id', authenticateAdmin, async function (req, res) {
+    googleAuth.authorize()
+        .then((auth) => {
+            googleSheets.spreadsheets.values.get({
+                auth: auth,
+                spreadsheetId: SPREADSHEET_ID,
+                range: "'Sheet1'!A2:J",
+            }, async function (err, response) {
+                if (err) {
+                    console.log('The API returned an error: ' + err);
+                    return console.log(err);
+                }
+                const dataArray = response.data.values
+                const id = req.params.id
+                const toUpdate = (row) => row[0] === id
+                const index = (dataArray.findIndex(toUpdate) + 2)
+                const updateRange = 'Sheet1!I' + index
 
-    
+                await googleSheets.spreadsheets.values.update({
+                    auth: auth,
+                    spreadsheetId: SPREADSHEET_ID,
+                    range: updateRange,
+                    valueInputOption: 'USER_ENTERED',
+                    resource: {
+                        values: [[new Date().toDateString()]]
+                    }
+                })
 
-    
+                res.redirect('/admin')
+            });
+        })
+        .catch((err) => {
+            console.log('auth error', err);
+        });
+})
+
+app.delete('/admin/delete/:id', authenticateAdmin, async function (req, res) {
+    googleAuth.authorize()
+        .then((auth) => {
+            googleSheets.spreadsheets.values.get({
+                auth: auth,
+                spreadsheetId: SPREADSHEET_ID,
+                range: "'Sheet1'!A2:J",
+            }, async function (err, response) {
+                if (err) {
+                    console.log('The API returned an error: ' + err);
+                    return console.log(err);
+                }
+                const dataArray = response.data.values
+                const id = req.params.id
+                const toUpdate = (row) => row[0] === id
+                const index = (dataArray.findIndex(toUpdate) + 2)
+
+                await googleSheets.spreadsheets.batchUpdate({
+                    auth,
+                    SPREADSHEET_ID,
+                    resource: {
+                        requests: [{
+                            deleteDimension: {
+                                range: {
+                                    sheetId: 0,
+                                    dimension: 'ROWS',
+                                    startIndex: index - 1,
+                                    endIndex: index
+                                }
+                            }
+                        }]
+                    }
+                })
+
+                res.redirect('/admin')
+            });
+        })
+        .catch((err) => {
+            console.log('auth error', err);
+        });
 })
 
 app.post('/update/:id/:user_id', authenticateAuthorizedUser, async function (req, res) {
@@ -404,7 +476,7 @@ app.post('/admin', authenticateAdmin, async function (req, res) {
                 const dataArray = response.data.values
                 let updates = []
                 for (let i = 0; i < dataArray.length; i++) {
-                    updates.push(['Code Outdated', '', '', 'Cannot be scheduled: CODE OUTDATED. Update code to allow submission to be scheduled.', dataArray[i][7], ''])
+                    updates.push(['Code Outdated', '', '', 'Cannot be scheduled: CODE OUTDATED.', dataArray[i][7], ''])
                 }
 
                 await googleSheets.spreadsheets.values.update({
@@ -513,7 +585,7 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
                         range: ranges[i],
                         valueInputOption: 'USER_ENTERED',
                         resource: {
-                            values: [['Cannot be scheduled: WAIT RESTRICTION. Can be scheduled after ' + lastReview.get(dataArray[i][1]).toDateString().substring(0, 10) + '.']]
+                            values: [['Cannot be scheduled: WAIT RESTRICTION until ' + lastReview.get(dataArray[i][1]).toDateString().substring(0, 10) + '.']]
                         }
                     })
                 }
