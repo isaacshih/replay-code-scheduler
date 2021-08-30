@@ -189,10 +189,10 @@ app.post('/submit', authenticateUser, async function (req, res) {
                             var d = new Date(submissionItem.completed)
                             d.setDate(d.getDate() + REVIEW_WAIT_TIME)
                             if (d > new Date()) {
-                                info = 'Cannot be scheduled: Wait restriction. Can be scheduled after ' + d.toDateString().substring(0, 10) + '.'
+                                info = 'Cannot be scheduled: WAIT RESTRICTION. Can be scheduled after ' + d.toDateString().substring(0, 10) + '.'
                             }
                         } else if (submissionItem.user_id == req.user) {
-                            info = 'Cannot be scheduled: Multiple submissions. Can be scheduled after your higher priority submissons are completed.'
+                            info = 'Cannot be scheduled: MULTIPLE SUBMISSIONS. Can be scheduled after your higher priority submissons are completed.'
                         }
                     }
                 }
@@ -399,7 +399,7 @@ app.post('/', authenticateAdmin, async function (req, res) {
                 const dataArray = response.data.values
                 let updates = []
                 for (let i = 0; i < dataArray.length; i++) {
-                    updates.push(['', '', '', 'Cannot be scheduled: Code outdated. Update code to allow submission to be scheduled.', dataArray[i][7], ''])
+                    updates.push(['Code Outdated', '', '', 'Cannot be scheduled: CODE OUTDATED. Update code to allow submission to be scheduled.', dataArray[i][7], ''])
                 }
 
                 await googleSheets.spreadsheets.values.update({
@@ -563,7 +563,7 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
                         range: ranges[i],
                         valueInputOption: 'USER_ENTERED',
                         resource: {
-                            values: [['Cannot be scheduled: Wait restriction. Can be scheduled after ' + lastReview.get(dataArray[i][1]).toDateString().substring(0, 10) + '.']]
+                            values: [['Cannot be scheduled: WAIT RESTRICTION. Can be scheduled after ' + lastReview.get(dataArray[i][1]).toDateString().substring(0, 10) + '.']]
                         }
                     })
                 }
