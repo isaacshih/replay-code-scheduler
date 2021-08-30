@@ -43,7 +43,7 @@ app.use(methodOverride('_method'))
 
 
 
-app.set('port', 8081)
+app.set('port', process.env.PORT || 8081)
 
 app.get('/auth/google',
     passport.authenticate('google', { scope: ['profile'] }));
