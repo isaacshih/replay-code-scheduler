@@ -235,7 +235,6 @@ app.get('/admin', authenticateAdmin, async function (req, res) {
                 }
                 const dataArray = response.data.values
 
-                var unapproved = []
                 var fullList = []
                 for (let i = 0; i < dataArray.length; i++) {
                     while (dataArray[i].length < 10) {
@@ -252,15 +251,11 @@ app.get('/admin', authenticateAdmin, async function (req, res) {
                         'approved': dataArray[i][7],
                         'completed': dataArray[i][8]
                     }
-                    if (!submissionItem.approved) {
-                        unapproved.push(submissionItem)
-                    }
-                    fullList.push(submissionItem)
 
+                    fullList.push(submissionItem)
                 }
 
                 var context = {}
-                context.submissionList = unapproved
                 context.fullList = fullList
                 context.user = req.user
                 context.admin = req.user.id === process.env.ADMIN_ID

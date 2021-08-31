@@ -19,27 +19,32 @@
 <div id="submissions" class="container">
     <br />
     <br />
-    <h1 class="text-center">Approve Submissions</h1>
+    <h1 class="text-center">Manually Complete/Delete Submissions</h1>
     <br />
     <br />
     <div id="submissions-table-header" class="container">
         <div class="row">
-            <div class="col-4"><p>Name</p></div>
+            <div class="col-3"><p>Name</p></div>
             <div class="col-2"><p>Code</p></div>
             <div class="col-1"><p>SR</p></div>
-            <div class="col-3"><p>Role</p></div>
+            <div class="col-1"><p>Role</p></div>
+            <div class="col-1"><p>Approved</p></div>
+            <div class="col-1"><p>Completed</p></div>
             <div class="col-1"><p class="text-center">Approve</p></div>
+            <div class="col-1"><p class="text-center">Complete</p></div>
             <div class="col-1"><p class="text-center">Delete</p></div>
         </div>
     </div>
     <div id="submissions-table-body">
-        {{#each submissionList}}
+        {{#each fullList}}
         <div class="container">
             <div class="row">
-                <div class="col-4">{{this.name}}</div>
+                <div class="col-3">{{this.name}}</div>
                 <div class="col-2">{{this.code}}</div>
                 <div class="col-1">{{this.sr}}</div>
-                <div class="col-3">{{this.role}}</div>
+                <div class="col-1">{{this.role}}</div>
+                <div class="col-1">{{this.approved}}</div>
+                <div class="col-1">{{this.completed}}</div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
                         <form action="/admin/{{this.id}}" method="POST">
@@ -49,47 +54,8 @@
                 </div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
-                        <form action="/admin/{{this.id}}?_method=DELETE" method="POST">
-                            <button class="btn btn-danger">&#10005;</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{/each}}
-    </div>
-</div>
-
-<div id="submissions" class="container">
-    <br />
-    <br />
-    <h1 class="text-center">Manually Complete/Delete Submissions</h1>
-    <br />
-    <br />
-    <div id="submissions-table-header" class="container">
-        <div class="row">
-            <div class="col-4"><p>Name</p></div>
-            <div class="col-2"><p>Code</p></div>
-            <div class="col-1"><p>SR</p></div>
-            <div class="col-1"><p>Role</p></div>
-            <div class="col-2"><p>Completed</p></div>
-            <div class="col-1"><p class="text-center">Complete</p></div>
-            <div class="col-1"><p class="text-center">Delete</p></div>
-        </div>
-    </div>
-    <div id="submissions-table-body">
-        {{#each fullList}}
-        <div class="container">
-            <div class="row">
-                <div class="col-4">{{this.name}}</div>
-                <div class="col-2">{{this.code}}</div>
-                <div class="col-1">{{this.sr}}</div>
-                <div class="col-1">{{this.role}}</div>
-                <div class="col-2">{{this.completed}}</div>
-                <div class="col-1">
-                    <div class="d-flex justify-content-center">
                         <form action="/admin/complete/{{this.id}}" method="POST">
-                            <button class="btn btn-success">&#10003;</button>
+                            <button class="btn btn-dark">&#10003;</button>
                         </form>
                     </div>
                 </div>
