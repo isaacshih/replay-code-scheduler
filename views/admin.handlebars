@@ -68,12 +68,10 @@
     <br />
     <div id="submissions-table-header" class="container">
         <div class="row">
-            <div class="col-2"><p>User ID</p></div>
-            <div class="col-1"><p>Name</p></div>
+            <div class="col-4"><p>Name</p></div>
             <div class="col-2"><p>Code</p></div>
             <div class="col-1"><p>SR</p></div>
-            <div class="col-1"><p>Role</p></div>
-            <div class="col-2"><p>Info</p></div>
+            <div class="col-3"><p>Role</p></div>
             <div class="col-1"><p>Completed</p></div>
             <div class="col-1"><p class="text-center">Complete</p></div>
             <div class="col-1"><p class="text-center">Delete</p></div>
@@ -83,13 +81,11 @@
         {{#each fullList}}
         <div class="container">
             <div class="row">
-                <div class="col-2">{{this.user_id}}</div>
-                <div class="col-1">{{this.name}}</div>
+                <div class="col-4">{{this.name}}</div>
                 <div class="col-2">{{this.code}}</div>
                 <div class="col-1">{{this.sr}}</div>
                 <div class="col-1">{{this.role}}</div>
-                <div class="col-2">{{this.info}}</div>
-                <div class="col-1">{{this.completed}}</div>
+                <div class="col-2">{{this.completed}}</div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
                         <form action="/admin/complete/{{this.id}}" method="POST">
