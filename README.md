@@ -1,6 +1,6 @@
 # replay-code-scheduler
 
-Log in with your Twitch account 
+Log in with your Twitch account  
 Submit Overwatch replay codes to be reviewed 
 
 Schedule is generated automatically based on
