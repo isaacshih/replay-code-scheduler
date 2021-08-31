@@ -14,7 +14,7 @@ passport.use(
     new twitchStrategy({
         clientID: process.env.TWITCH_CLIENT_ID,
         clientSecret: process.env.TWITCH_CLIENT_SECRET,
-        callbackURL: "/auth/twitch/callback",
+        callbackURL: "https://afternoon-scrubland-27043.herokuapp.com/auth/twitch/callback",
         scope: "user_read"
     },
     function (accessToken, refreshToken, profile, done) {
