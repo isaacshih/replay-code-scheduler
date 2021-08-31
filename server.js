@@ -400,7 +400,7 @@ app.delete('/admin/delete/:id', authenticateAdmin, async function (req, res) {
 
                 await googleSheets.spreadsheets.batchUpdate({
                     auth,
-                    SPREADSHEET_ID,
+                    spreadsheetId: SPREADSHEET_ID,
                     resource: {
                         requests: [{
                             deleteDimension: {
