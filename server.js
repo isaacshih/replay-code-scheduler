@@ -125,7 +125,12 @@ app.get('/', async function (req, res) {
                     context.submissionList = submissionList
                     context.scheduleList = scheduleList
                     context.user = req.user
-                    context.admin = req.user.id === process.env.ADMIN_ID
+                    if (req.user) {
+                        context.admin = req.user.id === process.env.ADMIN_ID
+                    } else {
+                        context.admin = false
+                    }
+                    
                     res.render('home', context)
                 }
             });
