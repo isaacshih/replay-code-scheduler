@@ -1,5 +1,7 @@
 # replay-code-scheduler
 
+Currently deployed on https://replaycodescheduler.herokuapp.com
+
 Log in with your Twitch account  
 Submit Overwatch replay codes to be reviewed
 
