@@ -26,7 +26,7 @@
     <form method="POST" action="/submit">
         <div class="form-group">
             <label for="name">Name:</label>
-            <input id="name" required type="text" pattern="[A-Za-z0-9_]{4,25}" minlength="4" maxlength="25" name="name" placeholder="Enter Twitch Name" class="form-control" />
+            <input id="name" type="text" name="name" readonly="readonly" value="{{user.displayName}}"class="form-control" />
         </div>
         <br />
         <div class="form-group">

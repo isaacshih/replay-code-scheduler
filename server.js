@@ -29,7 +29,7 @@ const googleSheets = google.sheets({ version: 'v4' });
 const googleAuth = require('./config/auth');
 
 const SPREADSHEET_ID = '1AOPhzX6y4Hr69P_JqbJDYjzYmEfwZHxn7J-Vfpdat18'
-
+const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const passportConfig = require('./config/passport-config')
 const cookieSession = require('cookie-session')
@@ -39,29 +39,24 @@ const { v4: uuidv4 } = require('uuid')
 
 
 app.use(express.urlencoded({ extended: false }));
-
-app.use(cookieSession({
-    maxAge: 24 * 60 * 60 * 1000,
-    keys: [process.env.COOKIE_KEY]
-}))
-
+app.use(cookieParser())
+app.use(cookieSession({ secret: process.env.COOKIE_KEY }))
 app.use(passport.initialize())
 app.use(passport.session())
+
+
 app.use(methodOverride('_method'))
 
 
 
 app.set('port', process.env.PORT || 8081)
 
-app.get('/auth/twitch',
-    passport.authenticate('twitch'));
+app.get('/auth/twitch', passport.authenticate('twitch', { forceVerify: true }));
 
-app.get('/auth/twitch/callback',
-    passport.authenticate('twitch'),
-    function (req, res) {
-        // Successful authentication, redirect home.
-        res.redirect('/');
-    });
+app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedirect: '/' }), function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+});
 
 app.get('/', async function (req, res) {
     googleAuth.authorize()
@@ -130,7 +125,7 @@ app.get('/', async function (req, res) {
                     context.submissionList = submissionList
                     context.scheduleList = scheduleList
                     context.user = req.user
-                    context.admin = req.user === process.env.ADMIN_ID
+                    context.admin = req.user.id === process.env.ADMIN_ID
                     res.render('home', context)
                 }
             });
@@ -148,7 +143,7 @@ app.get('/logout', function (req, res) {
 app.get('/submit', authenticateUser, function (req, res) {
     var context = {}
     context.user = req.user
-    context.admin = req.user === process.env.ADMIN_ID
+    context.admin = req.user.id === process.env.ADMIN_ID
     res.render('submit', context)
 })
 
@@ -185,13 +180,13 @@ app.post('/submit', authenticateUser, async function (req, res) {
                             'approved': dataArray[i][7],
                             'completed': dataArray[i][8]
                         }
-                        if (submissionItem.user_id == req.user && submissionItem.completed) {
+                        if (submissionItem.user_id == req.user.id && submissionItem.completed) {
                             var d = new Date(submissionItem.completed)
                             d.setDate(d.getDate() + REVIEW_WAIT_TIME)
                             if (d > new Date()) {
                                 info = 'WAIT RESTRICTION until ' + d.toDateString().substring(0, 10) + '.'
                             }
-                        } else if (submissionItem.user_id == req.user) {
+                        } else if (submissionItem.user_id == req.user.id) {
                             info = 'MULTIPLE SUBMISSIONS.'
                         }
                     }
@@ -204,7 +199,7 @@ app.post('/submit', authenticateUser, async function (req, res) {
                     valueInputOption: 'USER_ENTERED',
                     insertDataOption: 'INSERT_ROWS',
                     resource: {
-                        values: [[id, req.user, name, code, sr, role, info]]
+                        values: [[id, req.user.id, name, code, sr, role, info]]
                     }
                 })
 
@@ -258,7 +253,7 @@ app.get('/admin', authenticateAdmin, async function (req, res) {
                 context.submissionList = unapproved
                 context.fullList = fullList
                 context.user = req.user
-                context.admin = req.user === process.env.ADMIN_ID
+                context.admin = req.user.id === process.env.ADMIN_ID
                 res.render('admin', context)
             });
         })
@@ -424,7 +419,6 @@ app.delete('/admin/delete/:id', authenticateAdmin, async function (req, res) {
 })
 
 app.post('/update/:id/:user_id', authenticateAuthorizedUser, async function (req, res) {
-    console.log('poop')
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -623,7 +617,7 @@ function authenticateUser(req, res, next) {
 }
 
 function authenticateAuthorizedUser(req, res, next) {
-    if (req.user === req.params.user_id || req.user === process.env.ADMIN_ID) {
+    if (req.user.id === req.params.user_id || req.user.id === process.env.ADMIN_ID) {
         return next()
     } else {
         res.redirect('/')
@@ -631,7 +625,7 @@ function authenticateAuthorizedUser(req, res, next) {
 }
 
 function authenticateAdmin(req, res, next) {
-    if (req.user === process.env.ADMIN_ID) {
+    if (req.user.id === process.env.ADMIN_ID) {
         return next()
     } else {
         res.redirect('/')
