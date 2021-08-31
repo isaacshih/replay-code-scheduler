@@ -321,8 +321,8 @@ app.delete('/admin/:id', authenticateAdmin, async function (req, res) {
                 const index = (dataArray.findIndex(toUpdate) + 2)
 
                 await googleSheets.spreadsheets.batchUpdate({
-                    auth,
-                    SPREADSHEET_ID,
+                    auth: auth,
+                    spreadsheetId: SPREADSHEET_ID,
                     resource: {
                         requests: [{
                             deleteDimension: {
