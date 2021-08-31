@@ -59,6 +59,7 @@ app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedire
 });
 
 app.get('/', async function (req, res) {
+    console.log('rendered by \'' + req.user + '\'')
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
