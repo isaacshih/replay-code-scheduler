@@ -53,11 +53,11 @@ app.use(methodOverride('_method'))
 
 app.set('port', process.env.PORT || 8081)
 
-app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile'] }));
+app.get('/auth/twitch',
+    passport.authenticate('twitch'));
 
-app.get('/auth/google/callback',
-    passport.authenticate('google'),
+app.get('/auth/twitch/callback',
+    passport.authenticate('twitch'),
     function (req, res) {
         // Successful authentication, redirect home.
         res.redirect('/');

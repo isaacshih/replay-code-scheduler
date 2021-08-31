@@ -17,6 +17,7 @@
     "method-override": "^3.0.0",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
+    "passport-twitch": "^1.0.3",
     "uuid": "^8.3.2"
   }
 }

@@ -1,5 +1,5 @@
 const passport = require('passport')
-const GoogleStrategy = require('passport-google-oauth20').Strategy
+const twitchStrategy = require('passport-twitch').Strategy
 require('dotenv').config()
 
 passport.serializeUser(function (user, done) {
@@ -11,10 +11,11 @@ passport.deserializeUser(function (user, done) {
 })
 
 passport.use(
-    new GoogleStrategy({
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "https://afternoon-scrubland-27043.herokuapp.com/auth/google/callback"
+    new twitchStrategy({
+        clientID: process.env.TWITCH_CLIENT_ID,
+        clientSecret: process.env.TWITCH_CLIENT_SECRET,
+        callbackURL: "/auth/twitch/callback",
+        scope: "user_read"
     },
     function (accessToken, refreshToken, profile, done) {
         return done(null, profile.id)
