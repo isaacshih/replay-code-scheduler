@@ -103,13 +103,10 @@ app.get('/', async function (req, res) {
                             
                             var date = new Date()
                             var submissionDate = new Date(submissionItem.completed).toDateString()
-                            //console.log('A: ' + submissionDate)
-                            //console.log('B: ' + date.toDateString())
                             if (submissionDate == date.toDateString()) {
                                 completedToday = true
                             }
                             date.setDate(date.getDate() + 1)
-                            //console.log('C: ' + date.toDateString())
                             if (submissionDate == date.toDateString()) {
                                 completedToday = true
                             }
@@ -549,21 +546,24 @@ app.post('/schedule/remove/:id', authenticateAdmin, async function (req, res) {
                         'approved': dataArray[i][7],
                         'completed': dataArray[i][8]
                     }
-                    if (submissionItem.completed == new Date().toDateString()) {
+                    var date = new Date()
+                    var submissionDate = new Date(submissionItem.completed).toDateString()
+                    if (submissionDate == date.toDateString()) {
+                        completedToday = true
+                    }
+                    date.setDate(date.getDate() + 1)
+                    if (submissionDate == date.toDateString()) {
                         completedToday = true
                     }
                 }
 
                 if (completedToday) {
-                    console.log('completedToday')
                     id--
                 }
 
                 if (REVIEWS_PER_DAY[id] > 3) {
                     REVIEWS_PER_DAY[id]--
                 }
-
-                console.log(REVIEWS_PER_DAY)
 
                 res.redirect('/')
             });
@@ -601,20 +601,25 @@ app.post('/schedule/add/:id', authenticateAdmin, async function (req, res) {
                         'approved': dataArray[i][7],
                         'completed': dataArray[i][8]
                     }
-                    if (submissionItem.completed == new Date().toDateString()) {
+                    var date = new Date()
+                    var submissionDate = new Date(submissionItem.completed).toDateString()
+                    if (submissionDate == date.toDateString()) {
+                        completedToday = true
+                    }
+                    date.setDate(date.getDate() + 1)
+                    if (submissionDate == date.toDateString()) {
                         completedToday = true
                     }
                 }
 
                 if (completedToday) {
-                    console.log('completedToday')
                     id--
                 }
 
                 if (REVIEWS_PER_DAY[id] < 6) {
                     REVIEWS_PER_DAY[id]++
                 }
-                console.log(REVIEWS_PER_DAY)
+
                 res.redirect('/')
             });
         })
