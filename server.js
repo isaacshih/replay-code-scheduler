@@ -1,6 +1,6 @@
 'use strict';
 
-const REVIEWS_PER_DAY = 4
+var REVIEWS_PER_DAY = [4, 4, 4, 4, 4, 4, 4]
 const REVIEW_WAIT_TIME = 14
 
 const express = require('express')
@@ -60,7 +60,7 @@ app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedire
 
 app.get('/', async function (req, res) {
     if (req.user) {
-        console.log('rendered by \'' + req.user.displayName + '\'')
+        console.log('rendered by \'' + req.user.displayName + '\', id: ' + req.user.id)
     } else {
         console.log('rendered by not-logged-in')
     }
@@ -76,6 +76,8 @@ app.get('/', async function (req, res) {
                     return console.log(err);
                 } else {
                     const dataArray = response.data.values
+
+                    let completedToday = false
 
                     let submissionList = []
                     let scheduleList = []
@@ -99,6 +101,10 @@ app.get('/', async function (req, res) {
                                 'completed': dataArray[i][8]
                             }
 
+                            if (submissionItem.completed == new Date().toDateString()) {
+                                completedToday = true
+                            }
+
                             if (!submissionItem.approved) {
                                 continue
                             }
@@ -108,14 +114,24 @@ app.get('/', async function (req, res) {
 
                                 if (!submissionItem.info) {
                                     if (scheduleList.length) {
-                                        if (scheduleList[scheduleList.length - 1].submissions.length < REVIEWS_PER_DAY) {
+                                        if (scheduleList[scheduleList.length - 1].submissions.length < REVIEWS_PER_DAY[scheduleList.length - 1]) {
                                             scheduleList[scheduleList.length - 1].submissions.push(submissionItem)
-                                        } else {
+                                        } else if (completedToday && scheduleList.length < REVIEWS_PER_DAY.length) {
+                                            scheduleList.push({
+                                                id: scheduleList.length + 1,
+                                                submissions: [submissionItem]
+                                            })
+                                        } else if (scheduleList.length < REVIEWS_PER_DAY.length) {
                                             scheduleList.push({
                                                 id: scheduleList.length,
                                                 submissions: [submissionItem]
                                             })
                                         }
+                                    } else if (completedToday) {
+                                        scheduleList.push({
+                                            id: scheduleList.length + 1,
+                                            submissions: [submissionItem]
+                                        })
                                     } else {
                                         scheduleList.push({
                                             id: scheduleList.length,
@@ -496,6 +512,108 @@ app.post('/admin', authenticateAdmin, async function (req, res) {
         });
 })
 
+app.post('/schedule/remove/:id', authenticateAdmin, async function (req, res) {
+    googleAuth.authorize()
+        .then((auth) => {
+            googleSheets.spreadsheets.values.get({
+                auth: auth,
+                spreadsheetId: SPREADSHEET_ID,
+                range: "'Sheet1'!A2:J",
+            }, async function (err, response) {
+                if (err) {
+                    console.log('The API returned an error: ' + err);
+                    return console.log(err);
+                }
+                var dataArray = response.data.values
+                var id = req.params.id
+                let completedToday = false
+
+                for (let i = 0; i < dataArray.length; i++) {
+                    const submissionItem = {
+                        'id': dataArray[i][0],
+                        'user_id': dataArray[i][1],
+                        'name': dataArray[i][2],
+                        'code': dataArray[i][3],
+                        'sr': dataArray[i][4],
+                        'role': dataArray[i][5],
+                        'info': dataArray[i][6],
+                        'approved': dataArray[i][7],
+                        'completed': dataArray[i][8]
+                    }
+                    if (submissionItem.completed == new Date().toDateString()) {
+                        completedToday = true
+                    }
+                }
+
+                if (completedToday) {
+                    id--
+                }
+
+                if (REVIEWS_PER_DAY[id] > 3) {
+                    REVIEWS_PER_DAY[id]--
+                }
+
+                console.log(REVIEWS_PER_DAY)
+
+                res.redirect('/')
+            });
+        })
+        .catch((err) => {
+            console.log('auth error', err);
+        });
+})
+
+app.post('/schedule/add/:id', authenticateAdmin, async function (req, res) {
+    googleAuth.authorize()
+        .then((auth) => {
+            googleSheets.spreadsheets.values.get({
+                auth: auth,
+                spreadsheetId: SPREADSHEET_ID,
+                range: "'Sheet1'!A2:J",
+            }, async function (err, response) {
+                if (err) {
+                    console.log('The API returned an error: ' + err);
+                    return console.log(err);
+                }
+                var dataArray = response.data.values
+                var id = req.params.id
+                let completedToday = false
+
+                for (let i = 0; i < dataArray.length; i++) {
+                    const submissionItem = {
+                        'id': dataArray[i][0],
+                        'user_id': dataArray[i][1],
+                        'name': dataArray[i][2],
+                        'code': dataArray[i][3],
+                        'sr': dataArray[i][4],
+                        'role': dataArray[i][5],
+                        'info': dataArray[i][6],
+                        'approved': dataArray[i][7],
+                        'completed': dataArray[i][8]
+                    }
+                    if (submissionItem.completed == new Date().toDateString()) {
+                        completedToday = true
+                    }
+                }
+
+                if (completedToday) {
+                    id--
+                }
+
+                if (REVIEWS_PER_DAY[id] < 6) {
+                    REVIEWS_PER_DAY[id]++
+                }
+
+                console.log(REVIEWS_PER_DAY)
+
+                res.redirect('/')
+            });
+        })
+        .catch((err) => {
+            console.log('auth error', err);
+        });
+})
+
 app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
@@ -588,6 +706,11 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
                         }
                     })
                 }
+
+                for (let i = 0; i < REVIEWS_PER_DAY.length - 1; i++) {
+                    REVIEWS_PER_DAY[i] = REVIEWS_PER_DAY[i + 1]
+                }
+                REVIEWS_PER_DAY[REVIEWS_PER_DAY.length - 1] = 4
 
                 res.redirect('/')
             });
