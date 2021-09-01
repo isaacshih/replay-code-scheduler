@@ -101,7 +101,7 @@ app.get('/', async function (req, res) {
                                 'completed': dataArray[i][8]
                             }
 
-                            date = new Date()
+                            var date = new Date()
                             if (submissionItem.completed == date.toDateString() || submissionItem.completed == date.setDate(date.getDate() + 1).toDateString()) {
                                 completedToday = true
                             }
