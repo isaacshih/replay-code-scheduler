@@ -101,7 +101,9 @@ app.get('/', async function (req, res) {
                                 'completed': dataArray[i][8]
                             }
 
+                            console.log('comparing marked date to: ' + new Date().toDateString())
                             if (submissionItem.completed == new Date().toDateString()) {
+                                console.log('same')
                                 completedToday = true
                             }
 
@@ -379,6 +381,7 @@ app.post('/admin/complete/:id', authenticateAdmin, async function (req, res) {
                 const index = (dataArray.findIndex(toUpdate) + 2)
                 const updateRange = 'Sheet1!I' + index
 
+                console.log('marked as completed on: ' + new Date().toDateString())
                 await googleSheets.spreadsheets.values.update({
                     auth: auth,
                     spreadsheetId: SPREADSHEET_ID,
