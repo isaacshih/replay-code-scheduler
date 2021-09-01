@@ -102,7 +102,11 @@ app.get('/', async function (req, res) {
                             }
 
                             var date = new Date()
-                            if (submissionItem.completed == date.toDateString() || submissionItem.completed == date.setDate(date.getDate() + 1).toDateString()) {
+                            if (submissionItem.completed == date.toDateString()) {
+                                completedToday = true
+                            }
+                            date.setDate(date.getDate() + 1)
+                            if (submissionItem.completed == date.toDateString()) {
                                 completedToday = true
                             }
 
