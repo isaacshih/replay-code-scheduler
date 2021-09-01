@@ -100,15 +100,17 @@ app.get('/', async function (req, res) {
                                 'approved': dataArray[i][7],
                                 'completed': dataArray[i][8]
                             }
-                            console.log('A: ' + Date(submissionItem.completed).toDateString())
+                            
                             var date = new Date()
+                            var submissionDate = Date(submissionItem.completed).toDateString()
+                            console.log('A: ' + submissionDate)
                             console.log('B: ' + date.toDateString())
-                            if (Date(submissionItem.completed).toDateString() == date.toDateString()) {
+                            if (submissionDate == date.toDateString()) {
                                 completedToday = true
                             }
                             date.setDate(date.getDate() + 1)
                             console.log('C: ' + date.toDateString())
-                            if (Date(submissionItem.completed).toDateString() == date.toDateString()) {
+                            if (submissionDate == date.toDateString()) {
                                 completedToday = true
                             }
 
