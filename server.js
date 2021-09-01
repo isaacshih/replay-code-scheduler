@@ -562,6 +562,8 @@ app.post('/schedule/remove/:id', authenticateAdmin, async function (req, res) {
                     REVIEWS_PER_DAY[id]--
                 }
 
+                console.log(REVIEWS_PER_DAY)
+
                 res.redirect('/')
             });
         })
@@ -610,7 +612,7 @@ app.post('/schedule/add/:id', authenticateAdmin, async function (req, res) {
                 if (REVIEWS_PER_DAY[id] < 6) {
                     REVIEWS_PER_DAY[id]++
                 }
-
+                console.log(REVIEWS_PER_DAY)
                 res.redirect('/')
             });
         })
