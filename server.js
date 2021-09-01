@@ -102,7 +102,7 @@ app.get('/', async function (req, res) {
                             }
                             
                             var date = new Date()
-                            var submissionDate = Date(submissionItem.completed).toDateString()
+                            var submissionDate = new Date(submissionItem.completed).toDateString()
                             console.log('A: ' + submissionDate)
                             console.log('B: ' + date.toDateString())
                             if (submissionDate == date.toDateString()) {
