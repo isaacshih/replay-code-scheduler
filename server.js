@@ -136,12 +136,14 @@ app.get('/', async function (req, res) {
                                     } else if (completedToday) {
                                         scheduleList.push({
                                             id: scheduleList.length + 1,
-                                            submissions: [submissionItem]
+                                            submissions: [submissionItem],
+                                            first: true
                                         })
                                     } else {
                                         scheduleList.push({
                                             id: scheduleList.length,
-                                            submissions: [submissionItem]
+                                            submissions: [submissionItem],
+                                            first: true
                                         })
                                     }
                                 }
