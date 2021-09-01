@@ -103,13 +103,13 @@ app.get('/', async function (req, res) {
                             
                             var date = new Date()
                             var submissionDate = new Date(submissionItem.completed).toDateString()
-                            console.log('A: ' + submissionDate)
-                            console.log('B: ' + date.toDateString())
+                            //console.log('A: ' + submissionDate)
+                            //console.log('B: ' + date.toDateString())
                             if (submissionDate == date.toDateString()) {
                                 completedToday = true
                             }
                             date.setDate(date.getDate() + 1)
-                            console.log('C: ' + date.toDateString())
+                            //console.log('C: ' + date.toDateString())
                             if (submissionDate == date.toDateString()) {
                                 completedToday = true
                             }
@@ -555,6 +555,7 @@ app.post('/schedule/remove/:id', authenticateAdmin, async function (req, res) {
                 }
 
                 if (completedToday) {
+                    console.log('completedToday')
                     id--
                 }
 
@@ -606,6 +607,7 @@ app.post('/schedule/add/:id', authenticateAdmin, async function (req, res) {
                 }
 
                 if (completedToday) {
+                    console.log('completedToday')
                     id--
                 }
 
