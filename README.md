@@ -15,7 +15,7 @@ Submissions and schedule are listed for users to see without logging in
 
 Schedule is generated automatically based on
 - Weekly schedule (set which weekdays to perform reviews)
-- Reviews per day
+- Reviews per day, which can be manipulated by admins
 
 Reviews are excluded from the schedule for any of the following reasons:
 - If there has been a recent patch and no updated code has been provided
