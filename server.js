@@ -291,7 +291,7 @@ app.get('/admin', authenticateAdmin, async function (req, res) {
         });
 })
 
-app.post('/admin/:id', authenticateAdmin, async function (req, res) {
+app.post('/admin/approve/:id', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -316,48 +316,6 @@ app.post('/admin/:id', authenticateAdmin, async function (req, res) {
                     valueInputOption: 'USER_ENTERED',
                     resource: {
                         values: [['approved']]
-                    }
-                })
-
-                res.redirect('/admin')
-            });
-        })
-        .catch((err) => {
-            console.log('auth error', err);
-        });
-})
-
-app.delete('/admin/:id', authenticateAdmin, async function (req, res) {
-    googleAuth.authorize()
-        .then((auth) => {
-            googleSheets.spreadsheets.values.get({
-                auth: auth,
-                spreadsheetId: SPREADSHEET_ID,
-                range: "'Sheet1'!A2:J",
-            }, async function (err, response) {
-                if (err) {
-                    console.log('The API returned an error: ' + err);
-                    return console.log(err);
-                }
-                const dataArray = response.data.values
-                const id = req.params.id
-                const toUpdate = (row) => row[0] === id
-                const index = (dataArray.findIndex(toUpdate) + 2)
-
-                await googleSheets.spreadsheets.batchUpdate({
-                    auth: auth,
-                    spreadsheetId: SPREADSHEET_ID,
-                    resource: {
-                        requests: [{
-                            deleteDimension: {
-                                range: {
-                                    sheetId: 0,
-                                    dimension: 'ROWS',
-                                    startIndex: index - 1,
-                                    endIndex: index
-                                }
-                            }
-                        }]
                     }
                 })
 

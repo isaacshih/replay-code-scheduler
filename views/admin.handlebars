@@ -47,15 +47,15 @@
                 <div class="col-1">{{this.completed}}</div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
-                        <form action="/admin/{{this.id}}" method="POST">
-                            <button class="btn btn-success">&#10003;</button>
+                        <form action="/admin/approve/{{this.id}}" method="POST">
+                            <button class="btn btn-primary">&#10003;</button>
                         </form>
                     </div>
                 </div>
                 <div class="col-1">
                     <div class="d-flex justify-content-center">
                         <form action="/admin/complete/{{this.id}}" method="POST">
-                            <button class="btn btn-dark">&#10003;</button>
+                            <button class="btn btn-success">&#10003;</button>
                         </form>
                     </div>
                 </div>
