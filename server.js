@@ -449,7 +449,7 @@ app.post('/update/:id/:user_id', authenticateAuthorizedUser, async function (req
         });
 })
 
-app.post('/admin', authenticateAdmin, async function (req, res) {
+app.post('/admin/patch', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
