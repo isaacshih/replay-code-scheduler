@@ -1,1 +1,20 @@
-<h1>error 500</h1>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Scheduler</a>
+        <div class="nav navbar-nav navbar-right">
+            <a class="nav-item nav-link" href="/">Home</a>
+            {{#if user}}
+            {{#if admin}}
+            <a class="nav-item nav-link" href="/admin">Admin</a>
+            {{/if}}
+            <a class="nav-item nav-link" href="/submit">Submit</a>
+            <a class="nav-item nav-link" href="/logout">Logout</a>
+            {{else}}
+            <a class="nav-item nav-link" href="/auth/twitch">Login</a>
+            {{/if}}
+        </div>
+    </div>
+</nav>
+<br />
+<br />
+<h1>Error 500</h1>
