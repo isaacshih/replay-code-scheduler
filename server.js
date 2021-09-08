@@ -696,15 +696,31 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
 })
 
 app.use(function (req, res) {
+    var context = {}
+    context.user = req.user
+    if (req.user) {
+        context.admin = req.user.id === process.env.ADMIN_ID
+    } else {
+        context.admin = false
+    }
+
     res.status(404);
-    res.render('404');
+    res.render('404', context);
 });
 
 app.use(function (err, req, res, next) {
+    var context = {}
+    context.user = req.user
+    if (req.user) {
+        context.admin = req.user.id === process.env.ADMIN_ID
+    } else {
+        context.admin = false
+    }
+
     console.error(err.stack);
     res.type('plain/text');
     res.status(500);
-    res.render('500');
+    res.render('500', context);
 });
 
 app.listen(app.get('port'), function () {
