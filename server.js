@@ -62,7 +62,7 @@ app.get('/', async function (req, res) {
     if (req.user) {
         console.log('rendered by \'' + req.user.displayName + '\', id: ' + req.user.id)
     } else {
-        console.log('rendered by not-logged-in')
+        console.log('rendered by \'(user not logged in)\'')
     }
     googleAuth.authorize()
         .then((auth) => {
@@ -159,6 +159,7 @@ app.get('/', async function (req, res) {
                     } else {
                         context.admin = false
                     }
+                    context.completedToday = completedToday
                     
                     res.render('home', context)
                 }

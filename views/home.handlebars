@@ -41,19 +41,23 @@
                 </div>
             </div>
             <div class="d-flex justify-content-center col-1">
+                {{#if ../completedToday}}
                 {{#if this.first}}
                 <p>Complete</p>
                 {{/if}}
+                {{/if}}
             </div>
             <div class="d-flex justify-content-center col-1">
+                {{#if ../completedToday}}
+                {{#if this.first}}
                 <form action="/schedule/complete" method="POST">
                     {{#each this.submissions}}
                     <input type="hidden" name="schedule_items" value="{{this.id}}" />
                     {{/each}}
-                    {{#if this.first}}
                     <button class="btn btn-dark" type="submit">&#10003;</button>
-                    {{/if}}
                 </form>
+                {{/if}}
+                {{/if}}
             </div>
         </div>
         <div class="row"><div class="col-12"><hr /></div></div>
