@@ -6,4 +6,8 @@ obj
 *.njsproj
 .env
 *.suo
+<<<<<<< HEAD
 .vs
+=======
+.vs
+>>>>>>> 3d4409302fb97413f913505009fff3627e61937e

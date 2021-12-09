@@ -5,8 +5,14 @@ const REVIEW_WAIT_TIME = 14
 
 const express = require('express')
 const exphbs = require('express-handlebars')
+const favicon = require('serve-favicon')
+const path = require('path')
+
 
 var app = express()
+
+
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')))
 
 var hbs = exphbs.create({
     helpers: {
@@ -62,7 +68,7 @@ app.get('/', async function (req, res) {
     if (req.user) {
         console.log('rendered by \'' + req.user.displayName + '\', id: ' + req.user.id)
     } else {
-        console.log('rendered by not-logged-in')
+        console.log('rendered by \'(user not logged in)\'')
     }
     googleAuth.authorize()
         .then((auth) => {
@@ -159,6 +165,7 @@ app.get('/', async function (req, res) {
                     } else {
                         context.admin = false
                     }
+                    context.completedToday = completedToday
                     
                     res.render('home', context)
                 }
@@ -291,7 +298,7 @@ app.get('/admin', authenticateAdmin, async function (req, res) {
         });
 })
 
-app.post('/admin/:id', authenticateAdmin, async function (req, res) {
+app.post('/admin/approve/:id', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -316,48 +323,6 @@ app.post('/admin/:id', authenticateAdmin, async function (req, res) {
                     valueInputOption: 'USER_ENTERED',
                     resource: {
                         values: [['approved']]
-                    }
-                })
-
-                res.redirect('/admin')
-            });
-        })
-        .catch((err) => {
-            console.log('auth error', err);
-        });
-})
-
-app.delete('/admin/:id', authenticateAdmin, async function (req, res) {
-    googleAuth.authorize()
-        .then((auth) => {
-            googleSheets.spreadsheets.values.get({
-                auth: auth,
-                spreadsheetId: SPREADSHEET_ID,
-                range: "'Sheet1'!A2:J",
-            }, async function (err, response) {
-                if (err) {
-                    console.log('The API returned an error: ' + err);
-                    return console.log(err);
-                }
-                const dataArray = response.data.values
-                const id = req.params.id
-                const toUpdate = (row) => row[0] === id
-                const index = (dataArray.findIndex(toUpdate) + 2)
-
-                await googleSheets.spreadsheets.batchUpdate({
-                    auth: auth,
-                    spreadsheetId: SPREADSHEET_ID,
-                    resource: {
-                        requests: [{
-                            deleteDimension: {
-                                range: {
-                                    sheetId: 0,
-                                    dimension: 'ROWS',
-                                    startIndex: index - 1,
-                                    endIndex: index
-                                }
-                            }
-                        }]
                     }
                 })
 
@@ -484,7 +449,7 @@ app.post('/update/:id/:user_id', authenticateAuthorizedUser, async function (req
         });
 })
 
-app.post('/admin', authenticateAdmin, async function (req, res) {
+app.post('/admin/patch', authenticateAdmin, async function (req, res) {
     googleAuth.authorize()
         .then((auth) => {
             googleSheets.spreadsheets.values.get({
@@ -737,15 +702,31 @@ app.post('/schedule/complete', authenticateAdmin, async function (req, res) {
 })
 
 app.use(function (req, res) {
+    var context = {}
+    context.user = req.user
+    if (req.user) {
+        context.admin = req.user.id === process.env.ADMIN_ID
+    } else {
+        context.admin = false
+    }
+
     res.status(404);
-    res.render('404');
+    res.render('404', context);
 });
 
 app.use(function (err, req, res, next) {
+    var context = {}
+    context.user = req.user
+    if (req.user) {
+        context.admin = req.user.id === process.env.ADMIN_ID
+    } else {
+        context.admin = false
+    }
+
     console.error(err.stack);
     res.type('plain/text');
     res.status(500);
-    res.render('500');
+    res.render('500', context);
 });
 
 app.listen(app.get('port'), function () {
